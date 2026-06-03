@@ -14,6 +14,7 @@ class Item extends Model
     protected $fillable = [
         'category_id', 'sku', 'name', 'unit', 'current_stock',
         'minimum_stock', 'location', 'description',
+        'image_url', 'image_public_id',
     ];
 
     protected $casts = [
@@ -33,14 +34,8 @@ class Item extends Model
 
     public function getStatusAttribute(): string
     {
-        if ($this->current_stock <= 0) {
-            return 'Habis';
-        }
-
-        if ($this->current_stock <= $this->minimum_stock) {
-            return 'Menipis';
-        }
-
+        if ($this->current_stock <= 0) return 'Habis';
+        if ($this->current_stock <= $this->minimum_stock) return 'Menipis';
         return 'Aman';
     }
 }

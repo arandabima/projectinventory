@@ -12,10 +12,25 @@
         </form>
     </div>
 
+    @if (session('status'))
+        <div class="alert ok">{{ session('status') }}</div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert danger">
+            <ul style="margin:0; padding-left:16px;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <section class="grid cols-2">
+        {{-- FORM TAMBAH BARANG --}}
         <div class="panel">
             <h2>Tambah Barang</h2>
-            <form method="post" action="{{ route('items.store') }}" class="form-grid">
+            <form method="post" action="{{ route('items.store') }}" class="form-grid" enctype="multipart/form-data">
                 @csrf
                 <div class="field">
                     <label for="sku">SKU</label>
@@ -54,15 +69,22 @@
                     <label for="description">Deskripsi</label>
                     <textarea id="description" name="description">{{ old('description') }}</textarea>
                 </div>
+                {{-- UPLOAD GAMBAR/VIDEO --}}
+                <div class="field full">
+                    <label for="image">Foto / Video Barang</label>
+                    <input id="image" type="file" name="image" accept="image/*,video/*">
+                    <div class="muted" style="font-size:12px; margin-top:4px;">Format: JPG, PNG, WebP, MP4, MOV. Maks 20MB.</div>
+                </div>
                 <div class="field full">
                     <button type="submit">Simpan Barang</button>
                 </div>
             </form>
         </div>
 
+        {{-- FORM MUTASI STOK --}}
         <div class="panel">
             <h2>Mutasi Stok</h2>
-            <form method="post" action="{{ route('movements.store') }}" class="form-grid">
+            <form method="post" action="{{ route('movements.store') }}" class="form-grid" enctype="multipart/form-data">
                 @csrf
                 <div class="field full">
                     <label for="item_id">Barang</label>
@@ -93,6 +115,12 @@
                     <label for="notes">Catatan</label>
                     <textarea id="notes" name="notes">{{ old('notes') }}</textarea>
                 </div>
+                {{-- UPLOAD DOKUMEN --}}
+                <div class="field full">
+                    <label for="document">Dokumen / Bukti Transaksi</label>
+                    <input id="document" type="file" name="document" accept="image/*,video/*,.pdf">
+                    <div class="muted" style="font-size:12px; margin-top:4px;">Format: JPG, PNG, PDF, MP4, MOV. Maks 20MB.</div>
+                </div>
                 <div class="field full">
                     <button type="submit">Simpan Mutasi</button>
                 </div>
@@ -100,11 +128,13 @@
         </div>
     </section>
 
+    {{-- DAFTAR BARANG --}}
     <section class="panel" style="margin-top: 16px;">
         <h2>Daftar Barang</h2>
         <table>
             <thead>
                 <tr>
+                    <th>Foto</th>
                     <th>SKU</th>
                     <th>Barang</th>
                     <th>Stok</th>
@@ -116,18 +146,32 @@
             <tbody>
                 @forelse ($items as $item)
                     <tr>
+                        <td>
+                            @if ($item->image_url)
+                                <img src="{{ $item->image_url }}" alt="{{ $item->name }}"
+                                     style="width:48px; height:48px; object-fit:cover; border-radius:6px;">
+                            @else
+                                <div style="width:48px; height:48px; background:#f0f0f0; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:20px;">📦</div>
+                            @endif
+                        </td>
                         <td>{{ $item->sku }}</td>
                         <td>
                             <strong>{{ $item->name }}</strong>
                             <div class="muted">{{ $item->category?->name ?? 'Tanpa kategori' }}</div>
                         </td>
-                        <td>{{ $item->current_stock }} {{ $item->unit }}<div class="muted">Min {{ $item->minimum_stock }}</div></td>
+                        <td>{{ $item->current_stock }} {{ $item->unit }}
+                            <div class="muted">Min {{ $item->minimum_stock }}</div>
+                        </td>
                         <td>{{ $item->location ?? '-' }}</td>
-                        <td><span @class(['badge', 'ok' => $item->status === 'Aman', 'warn' => $item->status === 'Menipis', 'danger' => $item->status === 'Habis'])>{{ $item->status }}</span></td>
+                        <td>
+                            <span @class(['badge', 'ok' => $item->status === 'Aman', 'warn' => $item->status === 'Menipis', 'danger' => $item->status === 'Habis'])>
+                                {{ $item->status }}
+                            </span>
+                        </td>
                         <td><a class="button ghost" href="{{ route('items.edit', $item) }}">Edit</a></td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="muted">Belum ada data barang.</td></tr>
+                    <tr><td colspan="7" class="muted">Belum ada data barang.</td></tr>
                 @endforelse
             </tbody>
         </table>

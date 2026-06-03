@@ -11,13 +11,14 @@ class StockMovement extends Model
     use HasFactory;
 
     protected $fillable = [
-        'item_id', 'type', 'quantity', 'stock_before', 'stock_after', 'notes', 'recorded_by',
+        'item_id', 'type', 'quantity', 'stock_before', 'stock_after',
+        'notes', 'recorded_by', 'document_url', 'document_public_id',
     ];
 
     protected $casts = [
-        'quantity' => 'integer',
+        'quantity'     => 'integer',
         'stock_before' => 'integer',
-        'stock_after' => 'integer',
+        'stock_after'  => 'integer',
     ];
 
     public function item(): BelongsTo
