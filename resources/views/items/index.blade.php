@@ -168,7 +168,16 @@
                                 {{ $item->status }}
                             </span>
                         </td>
-                        <td><a class="button ghost" href="{{ route('items.edit', $item) }}">Edit</a></td>
+                        <td>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <a class="button ghost" href="{{ route('items.edit', $item) }}">Edit</a>
+                                <form method="post" action="{{ route('items.destroy', $item) }}" onsubmit="return confirm('Hapus barang ini? Semua riwayat mutasi barang ini juga akan terhapus.');">
+                                    @csrf
+                                    @method('delete')
+                                    <button type="submit" style="background: var(--danger);">Hapus</button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
                 @empty
                     <tr><td colspan="7" class="muted">Belum ada data barang.</td></tr>

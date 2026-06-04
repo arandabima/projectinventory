@@ -1,20 +1,4 @@
 services:
-  traefik:
-    image: traefik:v3.1
-    command:
-      - --api.dashboard=true
-      - --api.insecure=true
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --entrypoints.web.address=:80
-    ports:
-      - "80:80"
-      - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - inventory
-
   pencatatan:
     build:
       context: .
@@ -25,18 +9,15 @@ services:
       APP_NAME: Inventory Laravel
       APP_ENV: local
       APP_DEBUG: "true"
-      APP_URL: http://inventory.localhost
+      APP_URL: http://localhost:8001
       APP_TIMEZONE: Asia/Jakarta
+      APP_KEY: "base64:74S6WazXw28sf4xIFV6GVqMSm1ErYZH8Jaz7pUoqAII="
       DB_CONNECTION: pgsql
       DB_SSLMODE: require
       RUN_MIGRATIONS: "true"
       INVENTORY_SERVICE: pencatatan
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.inventory-pencatatan.rule=Host(`inventory.localhost`) && (Path(`/`) || PathPrefix(`/pencatatan`))
-      - traefik.http.routers.inventory-pencatatan.entrypoints=web
-      - traefik.http.routers.inventory-pencatatan.priority=10
-      - traefik.http.services.inventory-pencatatan.loadbalancer.server.port=8000
+    ports:
+      - "8001:8000"
     networks:
       - inventory
 
@@ -50,18 +31,15 @@ services:
       APP_NAME: Inventory Laravel
       APP_ENV: local
       APP_DEBUG: "true"
-      APP_URL: http://inventory.localhost
+      APP_URL: http://localhost:8002
       APP_TIMEZONE: Asia/Jakarta
+      APP_KEY: "base64:74S6WazXw28sf4xIFV6GVqMSm1ErYZH8Jaz7pUoqAII="
       DB_CONNECTION: pgsql
       DB_SSLMODE: require
       RUN_MIGRATIONS: "false"
       INVENTORY_SERVICE: cetak-laporan
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.inventory-laporan.rule=Host(`inventory.localhost`) && PathPrefix(`/laporan`)
-      - traefik.http.routers.inventory-laporan.entrypoints=web
-      - traefik.http.routers.inventory-laporan.priority=20
-      - traefik.http.services.inventory-laporan.loadbalancer.server.port=8000
+    ports:
+      - "8002:8000"
     depends_on:
       - pencatatan
     networks:
@@ -77,18 +55,15 @@ services:
       APP_NAME: Inventory Laravel
       APP_ENV: local
       APP_DEBUG: "true"
-      APP_URL: http://inventory.localhost
+      APP_URL: http://localhost:8003
       APP_TIMEZONE: Asia/Jakarta
+      APP_KEY: "base64:74S6WazXw28sf4xIFV6GVqMSm1ErYZH8Jaz7pUoqAII="
       DB_CONNECTION: pgsql
       DB_SSLMODE: require
       RUN_MIGRATIONS: "false"
       INVENTORY_SERVICE: notif-komunikasi
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.inventory-notifikasi.rule=Host(`inventory.localhost`) && PathPrefix(`/notifikasi`)
-      - traefik.http.routers.inventory-notifikasi.entrypoints=web
-      - traefik.http.routers.inventory-notifikasi.priority=20
-      - traefik.http.services.inventory-notifikasi.loadbalancer.server.port=8000
+    ports:
+      - "8003:8000"
     depends_on:
       - pencatatan
     networks:

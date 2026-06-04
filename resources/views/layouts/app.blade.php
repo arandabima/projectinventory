@@ -67,6 +67,13 @@
         .stat { display: grid; gap: 4px; }
         .stat strong { font-size: 28px; line-height: 1.1; }
         .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+        .logout-form { margin-top: 24px; }
+        .logout-button {
+            background: #e2e8f0;
+            color: #1e293b;
+            width: 100%;
+        }
+        .logout-button:hover { background: #cbd5e1; }
         form { margin: 0; }
         .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
         .field.full { grid-column: 1 / -1; }
@@ -149,10 +156,16 @@
             <div class="service">Service: {{ env('INVENTORY_SERVICE', 'gateway') }}</div>
             <nav class="nav" aria-label="Navigasi utama">
                 <a href="{{ route('dashboard') }}" @class(['active' => request()->routeIs('dashboard')])>Dashboard</a>
+                <a href="{{ route('categories.index') }}" @class(['active' => request()->routeIs('categories.*')])>Kategori</a>
                 <a href="{{ route('items.index') }}" @class(['active' => request()->routeIs('items.*') || request()->routeIs('movements.*')])>Pencatatan</a>
                 <a href="{{ route('reports.index') }}" @class(['active' => request()->routeIs('reports.*')])>Cetak Laporan</a>
                 <a href="{{ route('notifications.index') }}" @class(['active' => request()->routeIs('notifications.*')])>Notif & Komunikasi</a>
             </nav>
+            <form method="post" action="{{ route('logout') }}" class="logout-form">
+                @csrf
+                <div class="service">Login: {{ auth()->user()?->username ?? auth()->user()?->name }}</div>
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
         </aside>
         <main>
             @if (session('status'))

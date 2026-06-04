@@ -82,6 +82,17 @@ class ItemController extends Controller
         return redirect()->route('items.index')->with('status', 'Data barang diperbarui.');
     }
 
+    public function destroy(Item $item): RedirectResponse
+    {
+        if ($item->image_public_id) {
+            $this->cloudinary->delete($item->image_public_id);
+        }
+
+        $item->delete();
+
+        return redirect()->route('items.index')->with('status', 'Barang berhasil dihapus.');
+    }
+
     private function validatedData(Request $request, ?int $itemId = null): array
     {
         return $request->validate([

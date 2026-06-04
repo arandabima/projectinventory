@@ -10,7 +10,7 @@
     </div>
 
     <section class="panel">
-        <form method="post" action="{{ route('items.update', $item) }}" class="form-grid">
+        <form method="post" action="{{ route('items.update', $item) }}" class="form-grid" enctype="multipart/form-data">
             @csrf
             @method('put')
             <div class="field">
@@ -49,6 +49,16 @@
             <div class="field full">
                 <label for="description">Deskripsi</label>
                 <textarea id="description" name="description">{{ old('description', $item->description) }}</textarea>
+            </div>
+            <div class="field full">
+                <label for="image">Foto / Video Barang</label>
+                @if ($item->image_url)
+                    <div style="margin-bottom:8px;">
+                        <img src="{{ $item->image_url }}" alt="{{ $item->name }}" style="width:80px; height:80px; object-fit:cover; border-radius:6px;">
+                    </div>
+                @endif
+                <input id="image" type="file" name="image" accept="image/*,video/*">
+                <div class="muted" style="font-size:12px; margin-top:4px;">Kosongkan jika tidak ingin mengganti file.</div>
             </div>
             <div class="field full">
                 <button type="submit">Simpan Perubahan</button>

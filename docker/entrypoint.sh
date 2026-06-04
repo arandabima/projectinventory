@@ -13,6 +13,7 @@ fi
 
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
     php artisan migrate --force
+    php artisan inventory:ensure-admin
 fi
 
 exec "$@"
