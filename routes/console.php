@@ -26,8 +26,30 @@ Artisan::command('inventory:ensure-admin', function () {
         'username' => $username,
         'email' => $email,
         'password' => $password,
+        'role' => 'admin',
     ]);
     $user->save();
 
     $this->info("Admin user ready: {$username}");
 })->purpose('Membuat atau memperbarui user admin inventory.');
+
+Artisan::command('inventory:ensure-user', function () {
+    $username = env('USER_USERNAME', 'user');
+    $email = env('USER_EMAIL', 'user@example.com');
+    $password = env('USER_PASSWORD', 'user12345');
+
+    $user = User::where('username', $username)
+        ->orWhere('email', $email)
+        ->first() ?? new User();
+
+    $user->fill([
+        'name' => env('USER_NAME', 'Inventory User'),
+        'username' => $username,
+        'email' => $email,
+        'password' => $password,
+        'role' => 'user',
+    ]);
+    $user->save();
+
+    $this->info("User ready: {$username}");
+})->purpose('Membuat atau memperbarui user biasa inventory.');

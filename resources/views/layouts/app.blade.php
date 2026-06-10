@@ -158,12 +158,14 @@
                 <a href="{{ route('dashboard') }}" @class(['active' => request()->routeIs('dashboard')])>Dashboard</a>
                 <a href="{{ route('categories.index') }}" @class(['active' => request()->routeIs('categories.*')])>Kategori</a>
                 <a href="{{ route('items.index') }}" @class(['active' => request()->routeIs('items.*') || request()->routeIs('movements.*')])>Pencatatan</a>
+                <a href="{{ route('orders.index') }}" @class(['active' => request()->routeIs('orders.*')])>Order</a>
+                <a href="{{ route('payments.index') }}" @class(['active' => request()->routeIs('payments.*')])>Pembayaran</a>
                 <a href="{{ route('reports.index') }}" @class(['active' => request()->routeIs('reports.*')])>Cetak Laporan</a>
                 <a href="{{ route('notifications.index') }}" @class(['active' => request()->routeIs('notifications.*')])>Notif & Komunikasi</a>
             </nav>
             <form method="post" action="{{ route('logout') }}" class="logout-form">
                 @csrf
-                <div class="service">Login: {{ auth()->user()?->username ?? auth()->user()?->name }}</div>
+                <div class="service">Login: {{ auth()->user()?->username ?? auth()->user()?->name }} · {{ strtoupper(auth()->user()?->role ?? 'user') }}</div>
                 <button type="submit" class="logout-button">Logout</button>
             </form>
         </aside>

@@ -35,4 +35,23 @@ return [
         ],
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
+    ],
+
+    'cloudinary' => [
+        'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+        'api_key' => env('CLOUDINARY_API_KEY'),
+        'api_secret' => env('CLOUDINARY_API_SECRET'),
+    ],
+
+    'doku' => [
+        'mall_id' => env('DOKU_MALL_ID'),
+        'shared_key' => env('DOKU_SHARED_KEY'),
+        'sandbox_url' => env('DOKU_SANDBOX_URL'),
+        'notification_url' => env('DOKU_NOTIFICATION_URL'),
+    ],
+
 ];

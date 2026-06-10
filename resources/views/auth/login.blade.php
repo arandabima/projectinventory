@@ -67,6 +67,34 @@
             width: 100%;
         }
         button:hover { background: var(--brand-strong); }
+        .divider {
+            align-items: center;
+            color: var(--muted);
+            display: flex;
+            font-size: 13px;
+            gap: 10px;
+            margin: 18px 0;
+        }
+        .divider::before,
+        .divider::after {
+            background: var(--line);
+            content: "";
+            flex: 1;
+            height: 1px;
+        }
+        .google {
+            align-items: center;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            color: var(--ink);
+            display: flex;
+            font-weight: 800;
+            justify-content: center;
+            min-height: 42px;
+            text-decoration: none;
+            width: 100%;
+        }
+        .google:hover { background: #f8fafc; }
         .errors {
             background: #fff1f2;
             border: 1px solid #fecaca;
@@ -107,6 +135,8 @@
             </label>
             <button type="submit">Masuk</button>
         </form>
+        <div class="divider">atau</div>
+        <a class="google" href="{{ route('auth.google.redirect') }}">Masuk dengan Google</a>
     </main>
 </body>
 </html>

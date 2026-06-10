@@ -12,6 +12,8 @@
         <div class="panel stat"><span class="muted">Total stok tercatat</span><strong>{{ number_format($stockValue) }}</strong></div>
         <div class="panel stat"><span class="muted">Mutasi stok</span><strong>{{ number_format($movementCount) }}</strong></div>
         <div class="panel stat"><span class="muted">Stok menipis</span><strong>{{ number_format($lowStockCount) }}</strong></div>
+        <div class="panel stat"><span class="muted">Total order</span><strong>{{ number_format($orderCount) }}</strong></div>
+        <div class="panel stat"><span class="muted">Pembayaran pending</span><strong>{{ number_format($pendingPaymentCount) }}</strong></div>
     </section>
 
     <section class="grid cols-2" style="margin-top: 16px;">
@@ -24,6 +26,8 @@
                     <select id="report_type" name="report_type" required>
                         <option value="stock">Stok Barang</option>
                         <option value="movement">Mutasi Stok</option>
+                        <option value="orders">Riwayat Order</option>
+                        <option value="payments">Rekonsiliasi Pembayaran</option>
                     </select>
                 </div>
                 <div class="field">
