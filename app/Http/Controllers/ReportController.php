@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Borrowing;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\Payment;
@@ -21,15 +22,17 @@ class ReportController extends Controller
             'stockValue' => Item::sum('current_stock'),
             'movementCount' => StockMovement::count(),
             'lowStockCount' => Item::whereColumn('current_stock', '<=', 'minimum_stock')->count(),
-            'orderCount' => Order::count(),
-            'pendingPaymentCount' => Payment::where('status', Payment::STATUS_PENDING)->count(),
+            'borrowingCount' => Borrowing::count(),
+            'pendingPaymentCount' => Payment::where('status', Payment::STATUS_PENDING)
+                ->whereNotNull('borrowing_id')
+                ->count(),
         ]);
     }
 
     public function export(Request $request): StreamedResponse
     {
         $data = $request->validate([
-            'report_type' => ['required', 'in:stock,movement,orders,payments'],
+            'report_type' => ['required', 'in:stock,movement,orders,borrowings,payments'],
             'period_start' => ['nullable', 'date'],
             'period_end' => ['nullable', 'date', 'after_or_equal:period_start'],
             'generated_by' => ['nullable', 'string', 'max:120'],
@@ -87,9 +90,38 @@ class ReportController extends Controller
                     return;
                 }
 
+                if ($data['report_type'] === 'borrowings') {
+                    fputcsv($handle, ['Tanggal', 'Peminjam', 'Status Borrowing', 'Tanggal Pinjam', 'Tanggal Kembali', 'Jumlah Item']);
+                    $query = Borrowing::with('user', 'items')->latest();
+
+                    if (! empty($data['period_start'])) {
+                        $query->whereDate('created_at', '>=', $data['period_start']);
+                    }
+
+                    if (! empty($data['period_end'])) {
+                        $query->whereDate('created_at', '<=', $data['period_end']);
+                    }
+
+                    $query->chunk(100, function ($borrowings) use ($handle) {
+                        foreach ($borrowings as $borrowing) {
+                            fputcsv($handle, [
+                                $borrowing->created_at->format('Y-m-d H:i:s'),
+                                $borrowing->user?->name ?? 'N/A',
+                                $borrowing->status,
+                                $borrowing->borrow_date?->format('Y-m-d'),
+                                $borrowing->return_date?->format('Y-m-d'),
+                                $borrowing->items->sum('quantity'),
+                            ]);
+                        }
+                    });
+
+                    fclose($handle);
+                    return;
+                }
+
                 if ($data['report_type'] === 'payments') {
-                    fputcsv($handle, ['Tanggal', 'Nomor Order', 'Reference', 'Transaction ID', 'Metode', 'Status', 'Amount', 'Paid At']);
-                    $query = Payment::with('order')->latest();
+                    fputcsv($handle, ['Tanggal', 'Nomor Borrowing', 'Reference', 'Transaction ID', 'Metode', 'Status', 'Amount', 'Paid At']);
+                    $query = Payment::with('borrowing')->whereNotNull('borrowing_id')->latest();
 
                     if (! empty($data['period_start'])) {
                         $query->whereDate('created_at', '>=', $data['period_start']);
@@ -103,7 +135,7 @@ class ReportController extends Controller
                         foreach ($payments as $payment) {
                             fputcsv($handle, [
                                 $payment->created_at->format('Y-m-d H:i:s'),
-                                $payment->order?->order_number,
+                                $payment->borrowing?->id,
                                 $payment->doku_reference_number,
                                 $payment->doku_transaction_id,
                                 $payment->payment_method,

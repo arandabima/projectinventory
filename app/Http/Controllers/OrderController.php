@@ -40,7 +40,7 @@ class OrderController extends Controller
 
         $order = $this->orderService->createOrder($data, $lineItems);
 
-        return redirect()->route('orders.checkout', $order)->with('status', 'Order dibuat. Lanjutkan ke pembayaran.');
+        return redirect()->route('admin.orders.checkout', $order)->with('status', 'Order dibuat. Lanjutkan ke pembayaran.');
     }
 
     public function show(Order $order): View
@@ -65,7 +65,7 @@ class OrderController extends Controller
 
         $this->orderService->cancelOrder($order);
 
-        return redirect()->route('orders.show', $order)->with('status', 'Order dibatalkan.');
+        return redirect()->route('admin.orders.show', $order)->with('status', 'Order dibatalkan.');
     }
 
     private function validateOrderData(Request $request): array

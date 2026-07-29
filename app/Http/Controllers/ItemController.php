@@ -36,19 +36,17 @@ class ItemController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validatedData($request);
+        $data['status'] = 'available';
 
         if ($request->hasFile('image')) {
-            $uploaded = $this->cloudinary->upload(
-                $request->file('image')->getRealPath(),
-                'inventory/items'
-            );
-            $data['image_url']       = $uploaded['url'];
-            $data['image_public_id'] = $uploaded['public_id'];
+            $upload = $this->cloudinary->upload($request->file('image')->getRealPath());
+            $data['image_url'] = $upload['url'];
+            $data['image_public_id'] = $upload['public_id'];
         }
 
         Item::create($data);
 
-        return redirect()->route('items.index')->with('status', 'Barang berhasil dicatat.');
+        return redirect()->route('admin.items.index')->with('status', 'Barang berhasil dicatat.');
     }
 
     public function edit(Item $item): View
@@ -62,35 +60,26 @@ class ItemController extends Controller
     public function update(Request $request, Item $item): RedirectResponse
     {
         $data = $this->validatedData($request, $item->id);
+        $data['status'] = $item->status ?? 'available';
 
         if ($request->hasFile('image')) {
-            // Hapus gambar lama di Cloudinary
-            if ($item->image_public_id) {
-                $this->cloudinary->delete($item->image_public_id);
-            }
-
-            $uploaded = $this->cloudinary->upload(
-                $request->file('image')->getRealPath(),
-                'inventory/items'
-            );
-            $data['image_url']       = $uploaded['url'];
-            $data['image_public_id'] = $uploaded['public_id'];
+            if ($item->image_public_id) { $this->cloudinary->delete($item->image_public_id); }
+            $upload = $this->cloudinary->upload($request->file('image')->getRealPath());
+            $data['image_url'] = $upload['url'];
+            $data['image_public_id'] = $upload['public_id'];
         }
 
         $item->update($data);
 
-        return redirect()->route('items.index')->with('status', 'Data barang diperbarui.');
+        return redirect()->route('admin.items.index')->with('status', 'Data barang diperbarui.');
     }
 
     public function destroy(Item $item): RedirectResponse
     {
-        if ($item->image_public_id) {
-            $this->cloudinary->delete($item->image_public_id);
-        }
-
+        if ($item->image_public_id) { $this->cloudinary->delete($item->image_public_id); }
         $item->delete();
 
-        return redirect()->route('items.index')->with('status', 'Barang berhasil dihapus.');
+        return redirect()->route('admin.items.index')->with('status', 'Barang berhasil dihapus.');
     }
 
     private function validatedData(Request $request, ?int $itemId = null): array
@@ -100,6 +89,7 @@ class ItemController extends Controller
             'sku'           => ['required', 'string', 'max:50', Rule::unique('items', 'sku')->ignore($itemId)],
             'name'          => ['required', 'string', 'max:150'],
             'unit'          => ['required', 'string', 'max:30'],
+            'price'         => ['required', 'numeric', 'min:0'],
             'current_stock' => ['required', 'integer', 'min:0'],
             'minimum_stock' => ['required', 'integer', 'min:0'],
             'location'      => ['nullable', 'string', 'max:120'],

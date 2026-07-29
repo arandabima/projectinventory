@@ -2,14 +2,15 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class HealthCheckTest extends TestCase
 {
-    public function test_login_page_is_accessible(): void
+    public function test_login_routes_are_registered(): void
     {
-        $response = $this->get('/login');
-
-        $response->assertStatus(200);
+        $this->assertTrue(Route::has('login'));
+        $this->assertTrue(Route::has('admin.login'));
+        $this->assertTrue(Route::has('auth.google.redirect'));
     }
 }

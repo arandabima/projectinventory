@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <div class="topbar">
@@ -6,11 +6,11 @@
             <h1>Edit Kategori</h1>
             <div class="muted">{{ $category->name }}</div>
         </div>
-        <a class="button ghost" href="{{ route('categories.index') }}">Kembali</a>
+        <a class="button ghost" href="{{ route('admin.categories.index') }}">Kembali</a>
     </div>
 
     <section class="panel">
-        <form method="post" action="{{ route('categories.update', $category) }}" class="form-grid">
+        <form method="post" action="{{ route('admin.categories.update', $category) }}" class="form-grid">
             @csrf
             @method('put')
             <div class="field full">

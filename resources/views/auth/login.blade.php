@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login - {{ config('app.name', 'Inventory Laravel') }}</title>
+    <title>Login User - {{ config('app.name', 'Inventory Laravel') }}</title>
     <style>
         :root {
             color-scheme: light;
@@ -38,55 +38,11 @@
         }
         h1 { font-size: 26px; margin: 0 0 4px; }
         .muted { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
-        .field { margin-bottom: 14px; }
-        label { display: block; font-size: 13px; font-weight: 800; margin-bottom: 6px; }
-        input {
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            color: var(--ink);
-            font: inherit;
-            padding: 10px 11px;
-            width: 100%;
-        }
-        .remember {
-            align-items: center;
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        .remember input { width: auto; }
-        button {
-            background: var(--brand);
-            border: 0;
-            border-radius: 8px;
-            color: #ffffff;
-            cursor: pointer;
-            font: inherit;
-            font-weight: 800;
-            min-height: 42px;
-            width: 100%;
-        }
-        button:hover { background: var(--brand-strong); }
-        .divider {
-            align-items: center;
-            color: var(--muted);
-            display: flex;
-            font-size: 13px;
-            gap: 10px;
-            margin: 18px 0;
-        }
-        .divider::before,
-        .divider::after {
-            background: var(--line);
-            content: "";
-            flex: 1;
-            height: 1px;
-        }
         .google {
             align-items: center;
-            border: 1px solid #cbd5e1;
+            background: var(--brand);
             border-radius: 8px;
-            color: var(--ink);
+            color: #ffffff;
             display: flex;
             font-weight: 800;
             justify-content: center;
@@ -94,7 +50,7 @@
             text-decoration: none;
             width: 100%;
         }
-        .google:hover { background: #f8fafc; }
+        .google:hover { background: var(--brand-strong); }
         .errors {
             background: #fff1f2;
             border: 1px solid #fecaca;
@@ -108,8 +64,8 @@
 </head>
 <body>
     <main class="login">
-        <h1>Login</h1>
-        <div class="muted">Masuk untuk mengelola inventory.</div>
+        <h1>Login User</h1>
+        <div class="muted">Gunakan Google untuk masuk sebagai user.</div>
 
         @if ($errors->any())
             <div class="errors">
@@ -119,24 +75,10 @@
             </div>
         @endif
 
-        <form method="post" action="{{ route('login.store') }}">
-            @csrf
-            <div class="field">
-                <label for="username">Username</label>
-                <input id="username" name="username" value="{{ old('username') }}" autocomplete="username" required autofocus>
-            </div>
-            <div class="field">
-                <label for="password">Password</label>
-                <input id="password" type="password" name="password" autocomplete="current-password" required>
-            </div>
-            <label class="remember">
-                <input type="checkbox" name="remember" value="1">
-                <span>Ingat saya</span>
-            </label>
-            <button type="submit">Masuk</button>
-        </form>
-        <div class="divider">atau</div>
         <a class="google" href="{{ route('auth.google.redirect') }}">Masuk dengan Google</a>
+        <div style="margin-top: 14px; font-size: 13px; color: var(--muted); text-align: center;">
+            Admin login tersedia di halaman terpisah.
+        </div>
     </main>
 </body>
 </html>

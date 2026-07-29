@@ -30,7 +30,7 @@ class CategoryController extends Controller
     {
         Category::create($this->validatedData($request));
 
-        return redirect()->route('categories.index')->with('status', 'Kategori berhasil ditambahkan.');
+        return redirect()->route('admin.categories.index')->with('status', 'Kategori berhasil ditambahkan.');
     }
 
     public function edit(Category $category): View
@@ -44,14 +44,14 @@ class CategoryController extends Controller
     {
         $category->update($this->validatedData($request, $category->id));
 
-        return redirect()->route('categories.index')->with('status', 'Kategori berhasil diperbarui.');
+        return redirect()->route('admin.categories.index')->with('status', 'Kategori berhasil diperbarui.');
     }
 
     public function destroy(Category $category): RedirectResponse
     {
         $category->delete();
 
-        return redirect()->route('categories.index')->with('status', 'Kategori berhasil dihapus.');
+        return redirect()->route('admin.categories.index')->with('status', 'Kategori berhasil dihapus.');
     }
 
     private function validatedData(Request $request, ?int $categoryId = null): array

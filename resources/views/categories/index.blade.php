@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <div class="topbar">
@@ -6,7 +6,7 @@
             <h1>Kategori</h1>
             <div class="muted">Kelola master kategori untuk pengelompokan barang.</div>
         </div>
-        <form method="get" action="{{ route('categories.index') }}" style="display: flex; gap: 8px; width: min(420px, 100%);">
+        <form method="get" action="{{ route('admin.categories.index') }}" style="display: flex; gap: 8px; width: min(420px, 100%);">
             <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari kategori">
             <button type="submit">Cari</button>
         </form>
@@ -15,7 +15,7 @@
     <section class="grid cols-2">
         <div class="panel">
             <h2>Tambah Kategori</h2>
-            <form method="post" action="{{ route('categories.store') }}" class="form-grid">
+            <form method="post" action="{{ route('admin.categories.store') }}" class="form-grid">
                 @csrf
                 <div class="field full">
                     <label for="name">Nama Kategori</label>
@@ -59,8 +59,8 @@
                         <td>{{ number_format($category->items_count) }}</td>
                         <td>
                             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                                <a class="button ghost" href="{{ route('categories.edit', $category) }}">Edit</a>
-                                <form method="post" action="{{ route('categories.destroy', $category) }}" onsubmit="return confirm('Hapus kategori ini? Barang di kategori ini akan menjadi tanpa kategori.');">
+                                <a class="button ghost" href="{{ route('admin.categories.edit', $category) }}">Edit</a>
+                                <form method="post" action="{{ route('admin.categories.destroy', $category) }}" onsubmit="return confirm('Hapus kategori ini? Barang di kategori ini akan menjadi tanpa kategori.');">
                                     @csrf
                                     @method('delete')
                                     <button type="submit" style="background: var(--danger);">Hapus</button>

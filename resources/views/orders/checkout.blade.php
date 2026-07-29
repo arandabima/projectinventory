@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <div class="topbar">
@@ -6,7 +6,7 @@
             <h1>Checkout</h1>
             <div class="muted">{{ $order->order_number }} siap diproses ke pembayaran.</div>
         </div>
-        <a class="button ghost" href="{{ route('orders.show', $order) }}">Lihat Invoice</a>
+        <a class="button ghost" href="{{ route('admin.orders.show', $order) }}">Lihat Invoice</a>
     </div>
 
     <section class="grid cols-2">
@@ -26,12 +26,12 @@
         <div class="panel">
             <h2>Pembayaran DOKU</h2>
             <p class="muted">Klik bayar untuk membuat sesi checkout DOKU. Callback pembayaran akan memperbarui status invoice otomatis.</p>
-            <form method="post" action="{{ route('payments.initiate', $order) }}" style="margin-bottom:12px;">
+            <form method="post" action="{{ route('admin.payments.initiate', $order) }}" style="margin-bottom:12px;">
                 @csrf
                 <button type="submit" @disabled($order->payment?->status !== 'pending')>Bayar Sekarang</button>
             </form>
             @if ($order->status === 'pending')
-                <form method="post" action="{{ route('orders.cancel', $order) }}" onsubmit="return confirm('Batalkan order ini?');">
+                <form method="post" action="{{ route('admin.orders.cancel', $order) }}" onsubmit="return confirm('Batalkan order ini?');">
                     @csrf
                     <button type="submit" style="background: var(--danger);">Batalkan Order</button>
                 </form>

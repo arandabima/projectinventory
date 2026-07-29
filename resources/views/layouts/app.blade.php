@@ -14,7 +14,6 @@
             --surface: #f4f7fb;
             --brand: #166534;
             --brand-strong: #14532d;
-            --accent: #0f766e;
             --danger: #b42318;
             --warning: #b54708;
         }
@@ -33,7 +32,7 @@
             color: #f8fafc;
             padding: 24px 18px;
         }
-        .brand { font-size: 19px; font-weight: 800; letter-spacing: 0; margin-bottom: 6px; }
+        .brand { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
         .service { color: #b7c7bf; font-size: 13px; margin-bottom: 26px; }
         .nav { display: grid; gap: 8px; }
         .nav a {
@@ -51,9 +50,9 @@
             gap: 16px;
             margin-bottom: 22px;
         }
-        h1 { margin: 0; font-size: 28px; letter-spacing: 0; }
-        h2 { margin: 0 0 14px; font-size: 18px; letter-spacing: 0; }
-        h3 { margin: 0 0 8px; font-size: 15px; letter-spacing: 0; }
+        h1 { margin: 0; font-size: 28px; }
+        h2 { margin: 0 0 14px; font-size: 18px; }
+        h3 { margin: 0 0 8px; font-size: 15px; }
         .muted { color: var(--muted); font-size: 14px; }
         .grid { display: grid; gap: 16px; }
         .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -153,19 +152,29 @@
     <div class="shell">
         <aside class="sidebar">
             <div class="brand">Inventory Laravel</div>
-            <div class="service">Service: {{ env('INVENTORY_SERVICE', 'gateway') }}</div>
+            <div class="service">
+                {{ auth()->user()?->isAdmin() ? 'Admin Area' : 'User Area' }}
+                · Service: {{ env('INVENTORY_SERVICE', 'gateway') }}
+            </div>
             <nav class="nav" aria-label="Navigasi utama">
-                <a href="{{ route('dashboard') }}" @class(['active' => request()->routeIs('dashboard')])>Dashboard</a>
-                <a href="{{ route('categories.index') }}" @class(['active' => request()->routeIs('categories.*')])>Kategori</a>
-                <a href="{{ route('items.index') }}" @class(['active' => request()->routeIs('items.*') || request()->routeIs('movements.*')])>Pencatatan</a>
-                <a href="{{ route('orders.index') }}" @class(['active' => request()->routeIs('orders.*')])>Order</a>
-                <a href="{{ route('payments.index') }}" @class(['active' => request()->routeIs('payments.*')])>Pembayaran</a>
-                <a href="{{ route('reports.index') }}" @class(['active' => request()->routeIs('reports.*')])>Cetak Laporan</a>
-                <a href="{{ route('notifications.index') }}" @class(['active' => request()->routeIs('notifications.*')])>Notif & Komunikasi</a>
+                @if (auth()->user()?->isAdmin())
+                    <a href="{{ route('admin.dashboard') }}" @class(['active' => request()->routeIs('admin.dashboard')])>Dashboard</a>
+                    <a href="{{ route('admin.categories.index') }}" @class(['active' => request()->routeIs('admin.categories.*')])>Kategori</a>
+                    <a href="{{ route('admin.items.index') }}" @class(['active' => request()->routeIs('admin.items.*') || request()->routeIs('admin.movements.*')])>Pencatatan</a>
+                    <a href="{{ route('admin.transactions.index') }}" @class(['active' => request()->routeIs('admin.transactions.*')])>Transaksi</a>
+                    <a href="{{ route('admin.payments.index') }}" @class(['active' => request()->routeIs('admin.payments.*')])>Pembayaran</a>
+                    <a href="{{ route('admin.reports.index') }}" @class(['active' => request()->routeIs('admin.reports.*')])>Cetak Laporan</a>
+                    <a href="{{ route('admin.notifications.index') }}" @class(['active' => request()->routeIs('admin.notifications.*')])>Notif & Komunikasi</a>
+                @else
+                    <a href="{{ route('user.dashboard') }}" @class(['active' => request()->routeIs('user.dashboard')])>Dashboard</a>
+                    <a href="{{ route('user.profile') }}" @class(['active' => request()->routeIs('user.profile')])>Profil</a>
+                @endif
             </nav>
-            <form method="post" action="{{ route('logout') }}" class="logout-form">
+            <div class="service" style="margin-top: 24px;">
+                Login: {{ auth()->user()?->username ?? auth()->user()?->name }} · {{ strtoupper(auth()->user()?->role ?? 'user') }}
+            </div>
+            <form method="post" action="{{ auth()->user()?->isAdmin() ? route('admin.logout') : route('user.logout') }}" class="logout-form">
                 @csrf
-                <div class="service">Login: {{ auth()->user()?->username ?? auth()->user()?->name }} · {{ strtoupper(auth()->user()?->role ?? 'user') }}</div>
                 <button type="submit" class="logout-button">Logout</button>
             </form>
         </aside>

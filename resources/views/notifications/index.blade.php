@@ -11,7 +11,7 @@
     <section class="grid cols-2">
         <div class="panel">
             <h2>Buat Pesan</h2>
-            <form method="post" action="{{ route('notifications.store') }}" class="form-grid">
+            <form method="post" action="{{ route('admin.notifications.store') }}" class="form-grid">
                 @csrf
                 <div class="field">
                     <label for="channel">Channel</label>
@@ -52,7 +52,7 @@
                         <div class="muted">{{ strtoupper($message->channel) }} ke {{ $message->recipient }} · {{ $message->created_at->format('d M Y H:i') }}</div>
                         <p>{{ $message->message }}</p>
                         @if ($message->status !== 'read')
-                            <form method="post" action="{{ route('notifications.read', $message) }}">
+                            <form method="post" action="{{ route('admin.notifications.read', $message) }}">
                                 @csrf
                                 @method('patch')
                                 <button type="submit" class="button secondary">Tandai Dibaca</button>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ItemStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,13 +14,15 @@ class Item extends Model
 
     protected $fillable = [
         'category_id', 'sku', 'name', 'unit', 'current_stock',
-        'minimum_stock', 'location', 'description',
+        'minimum_stock', 'price', 'status', 'location', 'description',
         'image_url', 'image_public_id',
     ];
 
     protected $casts = [
         'current_stock' => 'integer',
         'minimum_stock' => 'integer',
+        'price' => 'decimal:2',
+        'status' => ItemStatus::class,
     ];
 
     public function category(): BelongsTo
@@ -32,10 +35,9 @@ class Item extends Model
         return $this->hasMany(StockMovement::class);
     }
 
-    public function getStatusAttribute(): string
+    public function borrowingItems(): HasMany
     {
-        if ($this->current_stock <= 0) return 'Habis';
-        if ($this->current_stock <= $this->minimum_stock) return 'Menipis';
-        return 'Aman';
+        return $this->hasMany(BorrowingItem::class);
     }
+
 }

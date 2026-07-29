@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <div class="topbar">
@@ -7,9 +7,9 @@
             <div class="muted">Invoice dan detail order.</div>
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <a class="button ghost" href="{{ route('orders.index') }}">Daftar Order</a>
+            <a class="button ghost" href="{{ route('admin.transactions.index') }}">Daftar Order</a>
             @if ($order->status === 'pending')
-                <a class="button secondary" href="{{ route('orders.checkout', $order) }}">Checkout</a>
+                <a class="button secondary" href="{{ route('admin.orders.checkout', $order) }}">Checkout</a>
             @endif
         </div>
     </div>

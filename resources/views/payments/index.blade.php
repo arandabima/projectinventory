@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <div class="topbar">
@@ -6,7 +6,7 @@
             <h1>Pembayaran</h1>
             <div class="muted">Pantau status pembayaran order dan lanjutkan checkout DOKU untuk invoice pending.</div>
         </div>
-        <a class="button" href="{{ route('orders.create') }}">Buat Order</a>
+        <a class="button" href="{{ route('admin.orders.create') }}">Buat Order</a>
     </div>
 
     <section class="panel">
@@ -52,9 +52,9 @@
                         <td>
                             <div style="display:flex; gap:8px; flex-wrap:wrap;">
                                 @if ($payment->order)
-                                    <a class="button ghost" href="{{ route('orders.show', $payment->order) }}">Invoice</a>
+                                    <a class="button ghost" href="{{ route('admin.orders.show', $payment->order) }}">Invoice</a>
                                     @if ($payment->status === 'pending')
-                                        <a class="button secondary" href="{{ route('orders.checkout', $payment->order) }}">Checkout</a>
+                                        <a class="button secondary" href="{{ route('admin.orders.checkout', $payment->order) }}">Checkout</a>
                                     @endif
                                 @endif
                             </div>

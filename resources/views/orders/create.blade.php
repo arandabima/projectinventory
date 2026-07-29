@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <div class="topbar">
@@ -6,10 +6,10 @@
             <h1>Buat Order</h1>
             <div class="muted">Pilih barang, jumlah, dan harga untuk membuat invoice pembayaran.</div>
         </div>
-        <a class="button ghost" href="{{ route('orders.index') }}">Kembali</a>
+        <a class="button ghost" href="{{ route('admin.transactions.index') }}">Kembali</a>
     </div>
 
-    <form method="post" action="{{ route('orders.store') }}" class="stack">
+    <form method="post" action="{{ route('admin.orders.store') }}" class="stack">
         @csrf
         <section class="panel">
             <h2>Informasi Order</h2>

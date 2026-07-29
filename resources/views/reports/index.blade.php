@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <div class="topbar">
@@ -12,22 +12,23 @@
         <div class="panel stat"><span class="muted">Total stok tercatat</span><strong>{{ number_format($stockValue) }}</strong></div>
         <div class="panel stat"><span class="muted">Mutasi stok</span><strong>{{ number_format($movementCount) }}</strong></div>
         <div class="panel stat"><span class="muted">Stok menipis</span><strong>{{ number_format($lowStockCount) }}</strong></div>
-        <div class="panel stat"><span class="muted">Total order</span><strong>{{ number_format($orderCount) }}</strong></div>
+        <div class="panel stat"><span class="muted">Total borrowing</span><strong>{{ number_format($borrowingCount) }}</strong></div>
         <div class="panel stat"><span class="muted">Pembayaran pending</span><strong>{{ number_format($pendingPaymentCount) }}</strong></div>
     </section>
 
     <section class="grid cols-2" style="margin-top: 16px;">
         <div class="panel">
             <h2>Buat Export</h2>
-            <form method="post" action="{{ route('reports.export') }}" class="form-grid">
+            <form method="post" action="{{ route('admin.reports.export') }}" class="form-grid">
                 @csrf
                 <div class="field full">
                     <label for="report_type">Jenis Laporan</label>
                     <select id="report_type" name="report_type" required>
                         <option value="stock">Stok Barang</option>
                         <option value="movement">Mutasi Stok</option>
-                        <option value="orders">Riwayat Order</option>
-                        <option value="payments">Rekonsiliasi Pembayaran</option>
+                        <option value="borrowings">Riwayat Borrowing</option>
+                        <option value="payments">Rekonsiliasi Pembayaran Borrowing</option>
+                        <option value="orders">Riwayat Order (Legacy)</option>
                     </select>
                 </div>
                 <div class="field">

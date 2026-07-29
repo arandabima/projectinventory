@@ -21,6 +21,7 @@ class Order extends Model
         'notes',
         'created_by',
         'cancelled_at',
+        'buyer_id',
     ];
 
     protected $casts = [
@@ -32,6 +33,8 @@ class Order extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function buyer(): BelongsTo { return $this->belongsTo(User::class, 'buyer_id'); }
 
     public function lineItems(): HasMany
     {

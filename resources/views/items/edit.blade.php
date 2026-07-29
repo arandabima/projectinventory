@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <div class="topbar">
@@ -6,11 +6,11 @@
             <h1>Edit Barang</h1>
             <div class="muted">{{ $item->sku }} · {{ $item->name }}</div>
         </div>
-        <a class="button ghost" href="{{ route('items.index') }}">Kembali</a>
+        <a class="button ghost" href="{{ route('admin.items.index') }}">Kembali</a>
     </div>
 
     <section class="panel">
-        <form method="post" action="{{ route('items.update', $item) }}" class="form-grid" enctype="multipart/form-data">
+        <form method="post" action="{{ route('admin.items.update', $item) }}" class="form-grid" enctype="multipart/form-data">
             @csrf
             @method('put')
             <div class="field">
@@ -33,6 +33,10 @@
             <div class="field">
                 <label for="unit">Satuan</label>
                 <input id="unit" name="unit" value="{{ old('unit', $item->unit) }}" required>
+            </div>
+            <div class="field">
+                <label for="price">Harga</label>
+                <input id="price" type="number" min="0" step="0.01" name="price" value="{{ old('price', $item->price) }}" required>
             </div>
             <div class="field">
                 <label for="current_stock">Stok Saat Ini</label>

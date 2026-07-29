@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Services\DokuPaymentService;
+use App\Services\InventoryService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -16,7 +18,7 @@ class PaymentController extends Controller
 
     public function index(): View
     {
-        $payments = Payment::with('order')
+        $payments = Payment::with('order', 'borrowing')
             ->latest()
             ->paginate(15);
 
@@ -42,14 +44,24 @@ class PaymentController extends Controller
         }
     }
 
-    public function handleDokuCallback(Request $request): Response
+    public function handleDokuCallback(Request $request, InventoryService $inventory): Response
     {
         if (! $this->dokuService->verifyWebhookSignature($request)) {
             return response('Signature Invalid', 401);
         }
 
         try {
-            $this->dokuService->processPaymentCallback($request);
+            $reference = $request->json('reference_number');
+            $existing = Payment::where('doku_reference_number', $reference)->first();
+            $wasConfirmed = $existing?->status === Payment::STATUS_CONFIRMED;
+            $payment = $this->dokuService->processPaymentCallback($request);
+            if ($payment->status === Payment::STATUS_CONFIRMED && ! $wasConfirmed && $payment->order_id) {
+                DB::transaction(function () use ($payment, $inventory) {
+                    $order = Order::with('lineItems.item')->lockForUpdate()->findOrFail($payment->order_id);
+                    foreach ($order->lineItems as $line) { $inventory->decreaseStock($line->item, $line->quantity); }
+                    $order->update(['status' => 'paid']);
+                });
+            }
 
             return response('OK', 200);
         } catch (\Exception $e) {

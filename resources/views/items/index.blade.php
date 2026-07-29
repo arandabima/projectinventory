@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <div class="topbar">
@@ -6,7 +6,7 @@
             <h1>Pencatatan</h1>
             <div class="muted">Kelola master barang dan catat mutasi stok masuk, keluar, atau penyesuaian.</div>
         </div>
-        <form method="get" action="{{ route('items.index') }}" style="display: flex; gap: 8px; width: min(420px, 100%);">
+        <form method="get" action="{{ route('admin.items.index') }}" style="display: flex; gap: 8px; width: min(420px, 100%);">
             <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari SKU, barang, lokasi">
             <button type="submit">Cari</button>
         </form>
@@ -30,7 +30,7 @@
         {{-- FORM TAMBAH BARANG --}}
         <div class="panel">
             <h2>Tambah Barang</h2>
-            <form method="post" action="{{ route('items.store') }}" class="form-grid" enctype="multipart/form-data">
+            <form method="post" action="{{ route('admin.items.store') }}" class="form-grid" enctype="multipart/form-data">
                 @csrf
                 <div class="field">
                     <label for="sku">SKU</label>
@@ -52,6 +52,10 @@
                 <div class="field">
                     <label for="unit">Satuan</label>
                     <input id="unit" name="unit" value="{{ old('unit', 'pcs') }}" required>
+                </div>
+                <div class="field">
+                    <label for="price">Harga</label>
+                    <input id="price" type="number" min="0" step="0.01" name="price" value="{{ old('price', 0) }}" required>
                 </div>
                 <div class="field">
                     <label for="current_stock">Stok Awal</label>
@@ -84,7 +88,7 @@
         {{-- FORM MUTASI STOK --}}
         <div class="panel">
             <h2>Mutasi Stok</h2>
-            <form method="post" action="{{ route('movements.store') }}" class="form-grid" enctype="multipart/form-data">
+            <form method="post" action="{{ route('admin.movements.store') }}" class="form-grid" enctype="multipart/form-data">
                 @csrf
                 <div class="field full">
                     <label for="item_id">Barang</label>
@@ -159,19 +163,20 @@
                             <strong>{{ $item->name }}</strong>
                             <div class="muted">{{ $item->category?->name ?? 'Tanpa kategori' }}</div>
                         </td>
+                        <td>Rp {{ number_format($item->price, 0, ',', '.') }}</td>
                         <td>{{ $item->current_stock }} {{ $item->unit }}
                             <div class="muted">Min {{ $item->minimum_stock }}</div>
                         </td>
                         <td>{{ $item->location ?? '-' }}</td>
                         <td>
-                            <span @class(['badge', 'ok' => $item->status === 'Aman', 'warn' => $item->status === 'Menipis', 'danger' => $item->status === 'Habis'])>
-                                {{ $item->status }}
+                            <span @class(['badge', 'ok' => $item->status->value === 'available', 'danger' => $item->status->value === 'borrowed'])>
+                                {{ ucfirst($item->status->value) }}
                             </span>
                         </td>
                         <td>
                             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                                <a class="button ghost" href="{{ route('items.edit', $item) }}">Edit</a>
-                                <form method="post" action="{{ route('items.destroy', $item) }}" onsubmit="return confirm('Hapus barang ini? Semua riwayat mutasi barang ini juga akan terhapus.');">
+                                <a class="button ghost" href="{{ route('admin.items.edit', $item) }}">Edit</a>
+                                <form method="post" action="{{ route('admin.items.destroy', $item) }}" onsubmit="return confirm('Hapus barang ini? Semua riwayat mutasi barang ini juga akan terhapus.');">
                                     @csrf
                                     @method('delete')
                                     <button type="submit" style="background: var(--danger);">Hapus</button>
@@ -180,7 +185,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="7" class="muted">Belum ada data barang.</td></tr>
+                    <tr><td colspan="8" class="muted">Belum ada data barang.</td></tr>
                 @endforelse
             </tbody>
         </table>

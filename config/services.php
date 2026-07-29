@@ -38,7 +38,7 @@ return [
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => env('GOOGLE_REDIRECT_URI'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL').'/auth/google/callback'),
     ],
 
     'cloudinary' => [
@@ -48,10 +48,17 @@ return [
     ],
 
     'doku' => [
-        'mall_id' => env('DOKU_MALL_ID'),
-        'shared_key' => env('DOKU_SHARED_KEY'),
+        // Mall ID/Shared Key adalah nama kredensial integrasi lama.
+        // DOKU Sandbox saat ini menyediakan Client ID dan Secret Key.
+        'mall_id' => env('DOKU_MALL_ID') ?: env('DOKU_CLIENT_ID'),
+        'shared_key' => env('DOKU_SHARED_KEY') ?: env('DOKU_SECRET_KEY'),
         'sandbox_url' => env('DOKU_SANDBOX_URL'),
+        'api_url' => env('DOKU_API_URL', 'https://api-sandbox.doku.com'),
         'notification_url' => env('DOKU_NOTIFICATION_URL'),
+    ],
+
+    'payment' => [
+        'webhook_secret' => env('PAYMENT_WEBHOOK_SECRET'),
     ],
 
 ];

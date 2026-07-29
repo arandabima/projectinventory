@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Borrowing;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,10 +19,12 @@ class Payment extends Model
 
     protected $fillable = [
         'order_id',
+        'borrowing_id',
         'amount',
         'status',
         'payment_method',
         'doku_reference_number',
+        'gateway_reference',
         'doku_transaction_id',
         'doku_response_json',
         'paid_at',
@@ -35,6 +39,11 @@ class Payment extends Model
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function borrowing(): BelongsTo
+    {
+        return $this->belongsTo(Borrowing::class);
     }
 
     public function scopeWhereConfirmed($query)

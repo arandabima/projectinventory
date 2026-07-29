@@ -6,7 +6,7 @@
             <h1>Dashboard Inventory</h1>
             <div class="muted">Ringkasan stok, aktivitas pencatatan, dan notifikasi gudang.</div>
         </div>
-        <a class="button" href="{{ route('items.index') }}">Tambah Pencatatan</a>
+        <a class="button" href="{{ route('admin.items.index') }}">Tambah Pencatatan</a>
     </div>
 
     <section class="grid cols-3">
@@ -43,7 +43,7 @@
                                 <div class="muted">{{ $item->sku }} · {{ $item->category?->name ?? 'Tanpa kategori' }}</div>
                             </td>
                             <td>{{ $item->current_stock }} / min {{ $item->minimum_stock }} {{ $item->unit }}</td>
-                            <td><span @class(['badge', 'danger' => $item->status === 'Habis', 'warn' => $item->status === 'Menipis'])>{{ $item->status }}</span></td>
+                            <td><span @class(['badge', 'ok' => $item->status->value === 'available', 'danger' => $item->status->value === 'borrowed'])>{{ ucfirst($item->status->value) }}</span></td>
                         </tr>
                     @empty
                         <tr><td colspan="3" class="muted">Tidak ada stok menipis.</td></tr>

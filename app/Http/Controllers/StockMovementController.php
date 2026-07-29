@@ -74,6 +74,6 @@ class StockMovementController extends Controller
             $notifications->notifyLowStock($item->fresh());
         });
 
-        return redirect()->route('items.index')->with('status', 'Mutasi stok berhasil disimpan.');
+        return redirect()->route('admin.items.index')->with('status', 'Mutasi stok berhasil disimpan.');
     }
 }

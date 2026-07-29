@@ -25,7 +25,7 @@ class NotificationController extends Controller
             'message' => ['required', 'string', 'max:1000'],
         ]) + ['status' => 'pending']);
 
-        return redirect()->route('notifications.index')->with('status', 'Pesan komunikasi dibuat.');
+        return redirect()->route('admin.notifications.index')->with('status', 'Pesan komunikasi dibuat.');
     }
 
     public function markAsRead(NotificationMessage $message): RedirectResponse
@@ -35,6 +35,6 @@ class NotificationController extends Controller
             'read_at' => now(),
         ]);
 
-        return redirect()->route('notifications.index')->with('status', 'Notifikasi ditandai dibaca.');
+        return redirect()->route('admin.notifications.index')->with('status', 'Notifikasi ditandai dibaca.');
     }
 }
